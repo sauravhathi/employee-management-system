@@ -9,9 +9,9 @@ Edit Employee
 Delete Employee
 
 ## Demo
-
 #### https://sauravhathi.github.io/employee-management-system/
 
+![image](https://user-images.githubusercontent.com/61316762/201523568-51e1ed64-26ab-43e6-b34c-a1687c8097d3.png)
 
 ## How to use
 
