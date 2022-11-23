@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Employee Management System</title>
+    <style>
+        th, td {
+            border: 1px solid #ffffff;
+        }
+        td{
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- add,edit,delete and view employees -->
+    <div class="flex justify-center flex-col my-10">
+        <div class="flex justify-center">
+            <div class="w-11/12 lg:w-1/2">
+                <div class="bg-slate-800 text-white text-center p-4 rounded-t-lg">
+                    <h1 class="text-3xl font-bold text-center my-4">Employee Management System</h1>
+                    <div class="flex justify-center">
+                        <div class="w-1/2">
+                                <div class="mb-4 text-left">
+                                    <label class="block text-white text-sm font-bold mb-2" for="name">
+                                        Name
+                                    </label>
+                                    <input class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-slate-700 focus:text-white focus:border-purple-500" id="name" type="text" placeholder="Enter Name">
+                                </div>
+                                <div class="mb-4 text-left">
+                                    <label class="block text-white text-sm font-bold mb-2" for="email">
+                                        Email
+                                    </label>
+                                    <input class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-slate-700 focus:text-white focus:border-purple-500" id="email" type="email" placeholder="Enter Email" name="email">
+                                </div>
+                                <div class="mb-4 text-left">
+                                    <label class="block text-white text-sm font-bold mb-2" for="phone">
+                                        Phone
+                                    </label>
+                                    <input class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-slate-700 focus:text-white focus:border-purple-500" id="phone" type="text" placeholder="Enter Phone" name="phone">
+                                </div>
+                                <div class="mb-4 text-left">
+                                    <label class="block text-white text-sm font-bold mb-2" for="job">
+                                        Job
+                                    </label>
+                                    <input class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-slate-700 focus:text-white focus:border-purple-500" id="job" type="text" placeholder="Enter Job" name="job">
+                                </div>
+                                <div class="flex justify-between gap-2 xl:gap-0 md:gap-0">
+                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="addEmployee()" type="button">
+                                        Add Employee
+                                    </button>
+                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="updateEmployee()" type="button">
+                                        Update Employee
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-center">
+            <div class="w-11/12 lg:w-1/2 flex flex-col justify-cente bg-slate-700 p-4 rounded-b-lg">
+                <div class="flex gap-2 justify-center items-center">
+                    <h1 class="text-2xl text-white font-semibold">Employees</h1>
+                    <img src="user.png" alt="user" class="w-7 h-7">
+                </div>
+                <div class="flex justify-center mt-4">
+                    <table class="table-fixed">
+                        <thead class="bg-gray-800 text-white">
+                            <tr class="text-center">
+                                <th class="px-2 py-2">Name</th>
+                                <th class="px-2 py-2">Email</th>
+                                <th class="px-2 py-2">Phone</th>
+                                <th class="px-2 py-2">Job</th>
+                                <th class="px-2 py-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employees"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-slate-800 text-white text-center p-4">
+        <p class="text-sm">Made with ❤️ by <a href="https://github.com/sauravhathi" target="_blank" class="text-blue-500">Saurav Hathi</a></p>
+    </footer>
+</body>
+<script>
+    // store all the data in local storage
+    // also provide a unique id to each employee
+    class Employee {
+        constructor(name, email, phone, job) {
+            this.name = name;
+            this.email = email;
+            this.phone = phone;
+            this.job = job;
+            this.id = Math.floor(Math.random() * 1000);
+        }
+    }
+
+    // show all the employees in the table
+    function showEmployees() {
+        let employees = JSON.parse(localStorage.getItem('employees'));
+        let employeesTable = document.getElementById('employees');
+        employeesTable.innerHTML = '';
+        if (employees != null) {
+            for (let i = 0; i < employees.length; i++) {
+                employeesTable.innerHTML += `
+                    <tr>
+                        <td class="px-4 py-2">${employees[i].id}</td>
+                        <td class="px-4 py-2">${employees[i].name}</td>
+                        <td class="px-4 py-2">${employees[i].phone}</td>
+                        <td class="px-4 py-2">${employees[i].job}</td>
+                        <td class="px-4 py-2  flex justify-center gap-2">
+                            <img onclick="editEmployee(${employees[i].id})" src="edit.png" alt="edit" class="w-6 h-6 cursor-pointer">
+                            <img onclick="deleteEmployee(${employees[i].id})" src="delete.png" alt="delete" class="w-6 h-6 cursor-pointer">
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    }
+
+    // add employee also check if the employee already exists phone number is unique also chck imput fields are not empty
+    function addEmployee() {
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let phone = document.getElementById('phone').value;
+        let job = document.getElementById('job').value;
+        let employees = JSON.parse(localStorage.getItem('employees'));
+        if (employees == null) {
+            employees = [];
+        }
+        let employee = new Employee(name, email, phone, job);
+        let flag = 0;
+        for (let i = 0; i < employees.length; i++) {
+            if (employees[i].phone == employee.phone) {
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0 && name != '' && email != '' && phone != '' && job != '' && phone.length >= 10 && phone.length <= 14) {
+            employees.push(employee);
+            localStorage.setItem('employees', JSON.stringify(employees));
+            emptyFields();
+            showEmployees();
+        } else if (flag == 1) {
+            alert('Employee already exists');
+        } else {
+            alert('Please fill all the fields');
+        }
+    }
+
+    // edit employee
+    function editEmployee(id) {
+        let employees = JSON.parse(localStorage.getItem('employees'));
+        for (let i = 0; i < employees.length; i++) {
+            if (employees[i].id == id) {
+                document.getElementById('name').value = employees[i].name;
+                document.getElementById('email').value = employees[i].email;
+                document.getElementById('phone').value = employees[i].phone;
+                document.getElementById('job').value = employees[i].job;
+                break;
+            }
+        }
+    }
+
+    // update employee
+    function updateEmployee() {
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let phone = document.getElementById('phone').value;
+        let job = document.getElementById('job').value;
+        let employees = JSON.parse(localStorage.getItem('employees'));
+        let id = 0;
+        for (let i = 0; i < employees.length; i++) {
+            if (employees[i].phone == phone || employees[i].email == email) {
+                id = employees[i].id;
+                break;
+            }
+        }
+        // add confirmation box
+        if (confirm('Are you sure you want to update this employee?')) {
+            for (let i = 0; i < employees.length; i++) {
+                if (employees[i].id == id) {
+                    employees[i].name = name;
+                    employees[i].email = email;
+                    employees[i].phone = phone;
+                    employees[i].job = job;
+                    break;
+                }
+            }
+            localStorage.setItem('employees', JSON.stringify(employees));
+            emptyFields();
+            showEmployees();
+        }
+    }
+
+
+    // delete employee
+    function deleteEmployee(id) {
+        let employees = JSON.parse(localStorage.getItem('employees'));
+        if (confirm('Are you sure you want to delete this employee?')) {
+            for (let i = 0; i < employees.length; i++) {
+                if (employees[i].id == id) {
+                    employees.splice(i, 1);
+                    break;
+                }
+            }
+            localStorage.setItem('employees', JSON.stringify(employees));
+            showEmployees();
+        }
+    }
+
+    function emptyFields() {
+        document.getElementById('name').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('job').value = '';
+    }
+
+    showEmployees();
+
+</script>
+</html>
